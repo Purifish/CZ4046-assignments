@@ -3,7 +3,12 @@
 #include <vector>
 #include <unordered_map>
 #include <fstream>
+#include <cmath>
+#include <climits>
 
+/*
+    Global constants
+*/
 const int M = 6;          // num of rows
 const int N = 6;          // num of cols
 const int STATES = M * N; // num of states
@@ -12,15 +17,23 @@ const int ACTIONS = 4;    // num of actions
 const int SR = 3; // start row
 const int SC = 2; // start col
 
+const double MAX_ERROR = 0.01;
 const double G = 0.99; // discount factor, gamma
 // const double G = 0.94606; // discount factor, gamma
+const double THRESH = MAX_ERROR * (1.0 - G) / G;
 
+/*
+    StateProbability struct
+*/
 typedef struct
 {
     std::pair<int, int> cell; // cell (state)
     double p;                 // probability
 } StateProbability;
 
+/*
+    Function declarations
+*/
 std::pair<int, int> getNextState(const char[][N], int, int, int);
 std::vector<StateProbability> getProbabilities(const char[][N], int, int, int);
 double expectedUtil(const char[][N], double[][N], int, int, int);
@@ -140,16 +153,18 @@ double expectedUtil(const char grid[][N], double U[][N], int r, int c, int a)
 
 void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char, double> &rewards)
 {
+    double delta;
     double newUtil[M][N] = {0};
+    int i;
     std::ofstream outputFile("output.txt");
 
     outputFile << M << "\n"
                << N << "\n"
                << "*\n";
 
-    // Actual terminating condition is from the Book
-    for (int i = 1; i <= 688; i++)
+    for (i = 1; i <= INT_MAX; i++)
     {
+        delta = 0.0;
         for (int r = 0; r < M; r++)
         {
             for (int c = 0; c < N; c++)
@@ -178,6 +193,7 @@ void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char
         {
             for (int c = 0; c < N; c++)
             {
+                delta = std::max(delta, fabs(newUtil[r][c] - U[r][c]));
                 U[r][c] = newUtil[r][c];
                 // std::printf("%8.3f ", U[r][c]);
                 outputFile << U[r][c] << " ";
@@ -187,7 +203,11 @@ void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char
         }
         // std::cout << "\n";
         outputFile << "*\n";
+
+        if (delta < THRESH)
+            break;
     }
+    std::cout << "ITERATIONS: " << i << "\n";
     outputFile << "-";
     outputFile.close();
 }
