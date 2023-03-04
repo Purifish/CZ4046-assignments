@@ -13,7 +13,6 @@ def read_data():
     components = data.split("*\n")
 
     x = np.array([i for i in range(1, len(components) - 1)])
-    # x = np.array([i for i in range(1, 650)])
 
     rc = components[0].split("\n")
     ROWS, COLS = int(rc[0]), int(rc[1])
@@ -21,7 +20,6 @@ def read_data():
     util = [[[] for j in range(COLS)] for i in range(ROWS)]
 
     for i in range(1, len(components) - 1):
-        # for i in range(1, 650):
         lines = components[i].split("\n")
         for r in range(ROWS):
             values = lines[r].split(" ")
@@ -36,17 +34,20 @@ def main():
     for r in range(M):
         for c in range(N):
             util[r][c] = np.array(util[r][c])
-            # print(str(r) + "," + str(c) + ": " + str(util[r][c]))
 
-    plt.figure(figsize=(14, 10))
+    plt.figure(figsize=(14, 8))
 
     for r in range(M):
         for c in range(N):
-            plt.plot(x, util[r][c])
+            if util[r][c][0] != 0:
+                plt.plot(x, util[r][c], label=str(r) + "," + str(c))
 
-    plt.legend([str(x // M) + "," + str(x % M) for x in range(M * N)],
-               loc='center right',
-               bbox_to_anchor=(1, 0.5))
+    plt.legend(
+        title="States",
+        loc='center left',
+        bbox_to_anchor=(1.03, 0.5)
+    )
+
     plt.yticks([0, 20, 40, 60, 80, 100])
     plt.xlabel('Number of Iterations')
     plt.ylabel('Utility Values')
