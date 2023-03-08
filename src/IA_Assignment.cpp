@@ -37,12 +37,16 @@ typedef struct
 std::pair<int, int> getNextState(const char[][N], int, int, int);
 std::vector<StateProbability> getProbabilities(const char[][N], int, int, int);
 double expectedUtil(const char[][N], double[][N], int, int, int);
-void valueIteration(const char[][N], double U[][N], std::unordered_map<char, double> &);
+void valueIteration(const char[][N], double U[][N], int[][N], std::unordered_map<char, double> &);
+void policyIteration(const char[][N], double U[][N], int[][N], std::unordered_map<char, double> &);
 
 int main()
 {
     double U[M][N] = {0}; // Utilities array
+    int PI[M][N];         // Policies array
 
+    for (int r = 0; r < M; r++)
+        std::fill_n(PI[r], N, -1);
     /*
         Grid initialisation.
 
@@ -72,14 +76,38 @@ int main()
     for (int r = 0; r < M; r++)
     {
         for (int c = 0; c < N; c++)
-        {
             std::cout << grid[r][c] << " ";
-        }
         std::cout << "\n";
     }
     std::cout << "\n";
 
-    valueIteration(grid, U, rewards);
+    valueIteration(grid, U, PI, rewards);
+
+    for (int r = 0; r < M; r++)
+    {
+        for (int c = 0; c < N; c++)
+            std::printf("%3d ", PI[r][c]);
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    for (int r = 0; r < M; r++)
+    {
+        for (int c = 0; c < N; c++)
+        {
+            U[r][c] = 0.0;
+            PI[r][c] = 0;
+        }
+    }
+    policyIteration(grid, U, PI, rewards);
+
+    for (int r = 0; r < M; r++)
+    {
+        for (int c = 0; c < N; c++)
+            std::printf("%3d ", PI[r][c]);
+        std::cout << "\n";
+    }
+    std::cout << "\n";
 
     return 0;
 }
@@ -151,7 +179,7 @@ double expectedUtil(const char grid[][N], double U[][N], int r, int c, int a)
     return util;
 }
 
-void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char, double> &rewards)
+void valueIteration(const char grid[][N], double U[][N], int PI[][N], std::unordered_map<char, double> &rewards)
 {
     double delta;
     double newUtil[M][N] = {0};
@@ -175,11 +203,17 @@ void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char
 
                 // Select first action's expected utility as max utility
                 newUtil[r][c] = expectedUtil(grid, U, r, c, 0);
+                PI[r][c] = 0;
 
                 // Iterate thru rest of actions
                 for (int a = 1; a < ACTIONS; a++)
                 {
-                    newUtil[r][c] = std::max(newUtil[r][c], expectedUtil(grid, U, r, c, a));
+                    double currentExpectedUtil = expectedUtil(grid, U, r, c, a);
+                    if (currentExpectedUtil > newUtil[r][c])
+                    {
+                        newUtil[r][c] = currentExpectedUtil;
+                        PI[r][c] = a;
+                    }
                 }
                 newUtil[r][c] = newUtil[r][c] * G + rewards[grid[r][c]];
             }
@@ -196,6 +230,7 @@ void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char
                 delta = std::max(delta, fabs(newUtil[r][c] - U[r][c]));
                 U[r][c] = newUtil[r][c];
                 // std::printf("%8.3f ", U[r][c]);
+                // std::printf("%3d ", PI[r][c]);
                 outputFile << U[r][c] << " ";
             }
             // std::cout << "\n";
@@ -207,7 +242,76 @@ void valueIteration(const char grid[][N], double U[][N], std::unordered_map<char
         if (delta < THRESH)
             break;
     }
-    std::cout << "ITERATIONS: " << i << "\n";
+    std::cout << "Iterations: " << i << "\n";
     outputFile << "-";
     outputFile.close();
+}
+
+void policyIteration(const char grid[][N], double U[][N], int PI[][N], std::unordered_map<char, double> &rewards)
+{
+    double newUtil[M][N] = {0};
+    int i;
+    bool unchanged;
+
+    for (i = 1; i <= INT_MAX; i++)
+    {
+        for (int k = 20; k > 0; k--)
+        {
+            for (int r = 0; r < M; r++)
+            {
+                for (int c = 0; c < N; c++)
+                {
+                    // Skip walls
+                    if (grid[r][c] == '0')
+                        continue;
+
+                    newUtil[r][c] = expectedUtil(grid, U, r, c, PI[r][c]) * G + rewards[grid[r][c]];
+                }
+            }
+            for (int r = 0; r < M; r++)
+            {
+                for (int c = 0; c < N; c++)
+                    U[r][c] = newUtil[r][c];
+            }
+        }
+
+        unchanged = true;
+
+        for (int r = 0; r < M; r++)
+        {
+            for (int c = 0; c < N; c++)
+            {
+                // Skip walls
+                if (grid[r][c] == '0')
+                    continue;
+
+                int newPolicy = 0;
+
+                // Select first action's expected utility as max utility
+                newUtil[r][c] = expectedUtil(grid, U, r, c, 0);
+
+                // Iterate thru rest of actions
+                for (int a = 1; a < ACTIONS; a++)
+                {
+                    double currentExpectedUtil = expectedUtil(grid, U, r, c, a);
+                    if (currentExpectedUtil > newUtil[r][c])
+                    {
+                        newUtil[r][c] = currentExpectedUtil;
+                        newPolicy = a;
+                    }
+                }
+
+                // Update policy
+                if (newPolicy != PI[r][c])
+                {
+                    PI[r][c] = newPolicy;
+                    unchanged = false;
+                }
+            }
+        }
+
+        if (unchanged)
+            break;
+    }
+    std::cout << "Iterations: " << i << "\n";
 }
