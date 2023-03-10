@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cmath>
 #include <climits>
+#include <string>
+#include <iomanip> // std::setw
 
 /*
     Global constants
@@ -19,8 +21,9 @@ const int SC = 2; // start col
 
 const double MAX_ERROR = 0.01;
 const double G = 0.99; // discount factor, gamma
-// const double G = 0.94606; // discount factor, gamma
 const double THRESH = MAX_ERROR * (1.0 - G) / G;
+
+const std::string DIRECTIONS[] = {"NORTH", "EAST", "SOUTH", "WEST", "NONE"};
 
 /*
     StateProbability struct
@@ -46,7 +49,7 @@ int main()
     int PI[M][N];         // Policies array
 
     for (int r = 0; r < M; r++)
-        std::fill_n(PI[r], N, -1);
+        std::fill_n(PI[r], N, 4);
     /*
         Grid initialisation.
 
@@ -86,7 +89,7 @@ int main()
     for (int r = 0; r < M; r++)
     {
         for (int c = 0; c < N; c++)
-            std::printf("%3d ", PI[r][c]);
+            std::cout << std::setw(8) << DIRECTIONS[PI[r][c]];
         std::cout << "\n";
     }
     std::cout << "\n";
@@ -94,9 +97,18 @@ int main()
     for (int r = 0; r < M; r++)
     {
         for (int c = 0; c < N; c++)
+            std::printf("%8.3f ", U[r][c]);
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    // reset utility and policy arrays for policy iteration
+    for (int r = 0; r < M; r++)
+    {
+        for (int c = 0; c < N; c++)
         {
             U[r][c] = 0.0;
-            PI[r][c] = 0;
+            PI[r][c] = grid[r][c] == '0' ? 4 : 0;
         }
     }
     policyIteration(grid, U, PI, rewards);
@@ -104,7 +116,15 @@ int main()
     for (int r = 0; r < M; r++)
     {
         for (int c = 0; c < N; c++)
-            std::printf("%3d ", PI[r][c]);
+            std::cout << std::setw(8) << DIRECTIONS[PI[r][c]];
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    for (int r = 0; r < M; r++)
+    {
+        for (int c = 0; c < N; c++)
+            std::printf("%8.3f ", U[r][c]);
         std::cout << "\n";
     }
     std::cout << "\n";
@@ -158,14 +178,6 @@ std::vector<StateProbability> getProbabilities(const char grid[][N], int r, int 
     return probabilities;
 }
 
-/*
-    Actions Legend:
-
-    0: North
-    1: East
-    2: South
-    3: West
-*/
 double expectedUtil(const char grid[][N], double U[][N], int r, int c, int a)
 {
     double util = 0.0;
