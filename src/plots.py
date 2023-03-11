@@ -4,30 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# def read_data():
-#     # TODO: Add try-except
-#     input_file = open("output.txt", "r")
-#     data = input_file.read()
-#     input_file.close()
-
-#     components = data.split("*\n")
-
-#     x = np.array([i for i in range(1, len(components) - 1)])
-
-#     rc = components[0].split("\n")
-#     ROWS, COLS = int(rc[0]), int(rc[1])
-
-#     util = [[[] for j in range(COLS)] for i in range(ROWS)]
-
-#     for i in range(1, len(components) - 1):
-#         lines = components[i].split("\n")
-#         for r in range(ROWS):
-#             values = lines[r].split(" ")
-#             for c in range(COLS):
-#                 util[r][c].append(float(values[c]))
-
-#     return util, x, ROWS, COLS
-
 def read_data():
     try:
         with open("output.txt", "r") as input_file:
@@ -40,7 +16,6 @@ def read_data():
 
     rc = components[0].split("\n")
     ROWS, COLS = int(rc[0]), int(rc[1])
-    # ROWS, COLS = map(int, components[0].split("\n"))
 
     util = np.empty([ROWS, COLS, len(components) - 2])
 

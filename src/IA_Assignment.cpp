@@ -6,7 +6,8 @@
 #include <cmath>
 #include <climits>
 #include <string>
-#include <iomanip> // std::setw
+#include <iomanip> // for std::setw
+#include <random>  // for RNG
 
 /*
     Global constants
@@ -24,6 +25,9 @@ const double G = 0.99; // discount factor, gamma
 const double THRESH = MAX_ERROR * (1.0 - G) / G;
 
 const std::string DIRECTIONS[] = {"NORTH", "EAST", "SOUTH", "WEST", "NONE"};
+
+template <class A, class B>
+using HashMap = std::unordered_map<A, B>;
 
 /*
     StateProbability struct
@@ -48,8 +52,16 @@ int main()
     double U[M][N] = {0}; // Utilities array
     int PI[M][N];         // Policies array
 
+    /*
+        Random Number Generator Initialisation (for policy iteration)
+    */
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> randomAction(0, ACTIONS - 1);
+
     for (int r = 0; r < M; r++)
         std::fill_n(PI[r], N, 4);
+
     /*
         Grid initialisation.
 
@@ -70,7 +82,7 @@ int main()
     /*
         Hash map representing the rewards for each type of cell
     */
-    std::unordered_map<char, double> rewards;
+    HashMap<char, double> rewards;
     rewards['g'] = 1.0;
     rewards['w'] = -0.04;
     rewards['o'] = -1.0;
@@ -103,14 +115,19 @@ int main()
     std::cout << "\n";
 
     // reset utility and policy arrays for policy iteration
+    std::cout << "\nInitial (random) Policy:\n\n";
     for (int r = 0; r < M; r++)
     {
         for (int c = 0; c < N; c++)
         {
             U[r][c] = 0.0;
-            PI[r][c] = grid[r][c] == '0' ? 4 : 0;
+            PI[r][c] = grid[r][c] == '0' ? 4 : randomAction(rng);
+            std::cout << std::setw(8) << DIRECTIONS[PI[r][c]];
         }
+        std::cout << "\n";
     }
+    std::cout << "\n";
+
     policyIteration(grid, U, PI, rewards);
 
     for (int r = 0; r < M; r++)
@@ -132,6 +149,9 @@ int main()
     return 0;
 }
 
+/*
+    Returns the intended next state given the current state and action
+*/
 std::pair<int, int> getNextState(const char grid[][N], int r, int c, int a)
 {
     int nextR, nextC;
