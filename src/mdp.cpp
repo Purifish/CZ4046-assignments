@@ -2,8 +2,8 @@
 
 namespace iaAssignment
 {
-    Mdp::Mdp(const int _M, const int _N, const char **_grid, double **_U, int **_PI, const HashMap<char, double> &_rewards)
-        : M(_M), N(_N), grid(_grid), U(_U), PI(_PI), rewards(_rewards)
+    Mdp::Mdp(const int _M, const int _N, const double _G, const double _MAX_ERROR, const char **_grid, double **_U, int **_PI, HashMap<char, double> &_rewards)
+        : M(_M), N(_N), G(_G), MAX_ERROR(_MAX_ERROR), grid(_grid), U(_U), PI(_PI), rewards(_rewards), THRESH(MAX_ERROR * (1.0 - G) / G)
     {
     }
 
@@ -55,14 +55,14 @@ namespace iaAssignment
         double p;                 // probability
         std::vector<StateProbability> probabilities;
 
-        for (int curAction = 0; curAction < ACTIONS; curAction++)
+        for (int curAction = 0; curAction < 4; curAction++)
         {
             if (curAction == toSkip)
                 continue;
 
             p = curAction == a ? 0.8 : 0.1;
             probabilities.push_back(StateProbability{
-                getNextState(grid, r, c, curAction),
+                getNextState(r, c, curAction),
                 p});
         }
 
@@ -92,13 +92,13 @@ namespace iaAssignment
                         continue;
 
                     // Select first action's expected utility as max utility
-                    newUtil[r][c] = expectedUtil(grid, U, r, c, 0);
+                    newUtil[r][c] = expectedUtil(r, c, 0);
                     PI[r][c] = 0;
 
                     // Iterate thru rest of actions
-                    for (int a = 1; a < ACTIONS; a++)
+                    for (int a = 1; a < 4; a++)
                     {
-                        double currentExpectedUtil = expectedUtil(grid, U, r, c, a);
+                        double currentExpectedUtil = expectedUtil(r, c, a);
                         if (currentExpectedUtil > newUtil[r][c])
                         {
                             newUtil[r][c] = currentExpectedUtil;
@@ -139,7 +139,7 @@ namespace iaAssignment
 
     void Mdp::policyIteration()
     {
-        double newUtil[M][N] = {0};
+        std::vector<std::vector<double>> newUtil(M, std::vector<double>(N, 0));
         int i;
         bool unchanged;
 
@@ -155,7 +155,7 @@ namespace iaAssignment
                         if (grid[r][c] == '0')
                             continue;
 
-                        newUtil[r][c] = expectedUtil(grid, U, r, c, PI[r][c]) * G + rewards[grid[r][c]];
+                        newUtil[r][c] = expectedUtil(r, c, PI[r][c]) * G + rewards[grid[r][c]];
                     }
                 }
                 for (int r = 0; r < M; r++)
@@ -178,12 +178,12 @@ namespace iaAssignment
                     int newPolicy = 0;
 
                     // Select first action's expected utility as max utility
-                    newUtil[r][c] = expectedUtil(grid, U, r, c, 0);
+                    newUtil[r][c] = expectedUtil(r, c, 0);
 
                     // Iterate thru rest of actions
-                    for (int a = 1; a < ACTIONS; a++)
+                    for (int a = 1; a < 4; a++)
                     {
-                        double currentExpectedUtil = expectedUtil(grid, U, r, c, a);
+                        double currentExpectedUtil = expectedUtil(r, c, a);
                         if (currentExpectedUtil > newUtil[r][c])
                         {
                             newUtil[r][c] = currentExpectedUtil;
@@ -204,6 +204,6 @@ namespace iaAssignment
                 break;
         }
         std::cout << "Iterations: " << i << "\n";
-    })
+    }
 
 }

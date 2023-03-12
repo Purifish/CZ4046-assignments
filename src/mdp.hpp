@@ -29,10 +29,10 @@ namespace iaAssignment
     {
     public:
         // Constructor
-        Mdp(const int _M, const int _N, const char **_grid, double **_U, int **_PI, const HashMap<char, double> &_rewards);
+        Mdp(const int _M, const int _N, const double _G, const double _MAX_ERROR, const char **_grid, double **_U, int **_PI, HashMap<char, double> &_rewards);
 
         // Destructor
-        ~Mdp();
+        // ~Mdp();
 
         // Public member functions
         void valueIteration();
@@ -41,11 +41,14 @@ namespace iaAssignment
     private:
         // Private member variables
         const char **grid;
-        const HashMap<char, double> &rewards;
+        HashMap<char, double> &rewards;
         double **U;
         int **PI;
         const int M;
         const int N;
+        const double G;
+        const double MAX_ERROR;
+        const double THRESH;
 
         double expectedUtil(int r, int c, int a);
         std::vector<StateProbability> getProbabilities(int r, int c, int a);
