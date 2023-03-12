@@ -12,13 +12,9 @@
 /*
     Global constants
 */
-const int M = 6;          // num of rows
-const int N = 6;          // num of cols
-const int STATES = M * N; // num of states
-const int ACTIONS = 4;    // num of actions
-
-const int SR = 3; // start row
-const int SC = 2; // start col
+const int M = 6;       // num of rows
+const int N = 6;       // num of cols
+const int ACTIONS = 4; // num of actions
 
 const double MAX_ERROR = 0.01;
 const double G = 0.99; // discount factor, gamma
