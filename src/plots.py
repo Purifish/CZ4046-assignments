@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def read_data():
+def read_data(file_name: str):
     try:
-        with open("output.txt", "r") as input_file:
+        with open(file_name, "r") as input_file:
             data = input_file.read()
     except IOError:
         print("Error: File not found!")
@@ -31,7 +31,7 @@ def read_data():
 
 
 def main():
-    util, x, M, N = read_data()
+    util, x, M, N = read_data("output.txt")
     for r in range(M):
         for c in range(N):
             util[r][c] = np.array(util[r][c])
