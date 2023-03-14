@@ -6,18 +6,20 @@
 
 #include "mdp.hpp"
 
-void printGrid(vect2d<char> &grid);     //
-void printUtilities(vect2d<double> &U); //
-void printPolicy(vect2d<int> &PI);      //
+/*
+    Function declarations
+*/
+void printGrid(vect2d<char> &grid);
+void printUtilities(vect2d<double> &U);
+void printPolicy(vect2d<int> &PI);
 void generateRandomGrid(vect2d<char> &grid, size_t M, size_t N);
 
 /*
     Constants
 */
-const double MAX_ERROR = 0.01; // epsilon value
+const double MAX_ERROR = 0.01; // epsilon value (same as c value)
 const double G = 0.99;         // discount factor, gamma
 const std::string DIRECTIONS[] = {"NORTH", "EAST", "SOUTH", "WEST", "NONE"};
-const char CELL_TYPES[] = {'w', 'g', 'o', '0'};
 
 int main()
 {
@@ -30,10 +32,11 @@ int main()
     */
     vect2d<char> grid;
     bool part1 = false;
-    bool random = false;
+    bool random = true;
 
     if (part1)
     {
+        // 'w': white, 'g': green, 'o': orange, '0': wall
         grid = {
             {'g', '0', 'g', 'w', 'w', 'g'},
             {'w', 'o', 'w', 'g', '0', 'o'},
@@ -45,18 +48,18 @@ int main()
     else if (!random)
     {
         grid = {
-            {'0', '0', 'o', 'g', '0', '0', 'g', 'o', 'o', 'o', 'o', '0'},
-            {'0', '0', 'o', '0', '0', '0', 'o', '0', 'g', 'o', '0', 'g'},
-            {'g', 'o', 'o', '0', 'g', '0', '0', 'o', 'g', '0', 'w', 'g'},
-            {'0', '0', '0', '0', 'w', 'o', 'o', 'w', 'g', 'o', 'o', 'w'},
-            {'0', '0', 'o', 'o', 'g', '0', 'o', 'o', '0', 'g', 'g', '0'},
-            {'0', '0', '0', 'g', 'w', 'o', 'o', 'g', '0', 'w', '0', 'w'},
-            {'g', '0', '0', 'g', 'g', 'o', 'g', 'g', 'w', '0', 'g', 'w'},
-            {'o', '0', 'w', 'o', 'o', 'o', '0', '0', 'o', 'g', 'w', 'g'},
-            {'0', '0', '0', 'o', 'g', '0', 'o', '0', '0', 'o', '0', 'g'},
-            {'0', '0', '0', 'o', 'o', 'o', 'o', 'g', '0', '0', 'g', 'w'},
-            {'0', 'g', 'o', '0', 'g', '0', '0', 'o', '0', '0', 'o', 'o'},
-            {'0', '0', 'g', 'o', 'g', '0', '0', 'g', 'o', '0', 'o', 'g'}};
+            {'w', 'w', 'o', 'g', 'w', 'w', 'g', 'o', 'o', 'o', 'o', 'w'},
+            {'w', 'w', 'o', 'w', 'w', 'w', 'o', 'w', 'g', 'o', 'w', 'g'},
+            {'g', 'o', 'o', 'w', 'g', 'w', 'w', 'o', 'g', 'w', '0', 'g'},
+            {'w', 'w', 'w', 'w', '0', 'o', 'o', '0', 'g', 'o', 'o', '0'},
+            {'w', 'w', 'o', 'o', 'g', 'w', 'o', 'o', 'w', 'g', 'g', 'w'},
+            {'w', 'w', 'w', 'g', '0', 'o', 'o', 'g', 'w', '0', 'w', '0'},
+            {'g', 'w', 'w', 'g', 'g', 'o', 'g', 'g', '0', 'w', 'g', '0'},
+            {'o', 'w', '0', 'o', 'o', 'o', 'w', 'w', 'o', 'g', '0', 'g'},
+            {'w', 'w', 'w', 'o', 'g', 'w', 'o', 'w', 'w', 'o', 'w', 'g'},
+            {'w', 'w', 'w', 'o', 'o', 'o', 'o', 'g', 'w', 'w', 'g', '0'},
+            {'w', 'g', 'o', 'w', 'g', 'w', 'w', 'o', 'w', 'w', 'o', 'o'},
+            {'w', 'w', 'g', 'o', 'g', 'w', 'w', 'g', 'o', 'w', 'o', 'g'}};
     }
     else
     {
@@ -114,9 +117,9 @@ void generateRandomGrid(vect2d<char> &grid, size_t M, size_t N)
         {
             randNum = randomCellType(rng);
             if (randNum <= 40)
-                grid[r][c] = '0';
-            else if (randNum <= 50)
                 grid[r][c] = 'w';
+            else if (randNum <= 50)
+                grid[r][c] = '0';
             else if (randNum <= 75)
                 grid[r][c] = 'g';
             else
