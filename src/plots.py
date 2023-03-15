@@ -31,7 +31,7 @@ def read_data(file_name: str):
 
 
 def main():
-    util, x, M, N = read_data("output.txt")
+    util, x, M, N = read_data("value-iteration-out.txt")
     for r in range(M):
         for c in range(N):
             util[r][c] = np.array(util[r][c])

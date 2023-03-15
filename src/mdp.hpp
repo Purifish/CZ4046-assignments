@@ -8,23 +8,29 @@
 #include <fstream>
 #include <cmath>
 #include <climits>
-#include <random> // for RNG
+#include <random>
 
 /*
-    Alias definitions for convenience
-*/
+ * Alias definitions for convenience
+ * See https://en.cppreference.com/w/cpp/language/type_alias for info about aliasing in C++
+ */
 template <class A, class B>
-using HashMap = std::unordered_map<A, B>;
+using HashMap = std::unordered_map<A, B>; // hashmap alias
 
 template <class T>
-using vect2d = std::vector<std::vector<T>>;
+using vect2d = std::vector<std::vector<T>>; // 2D vector alias
 
 template <class T>
-using vect = std::vector<T>;
+using vect = std::vector<T>; // 1D vector alias
 
-/*
-    StateProbability struct
-*/
+/**
+ * StateProbability Struct
+ * Represents the probability of transitioning to a state
+ * @param cell
+ * The state
+ * @param p
+ * The probability
+ */
 typedef struct
 {
     std::pair<int, int> cell; // cell (state)
@@ -58,9 +64,7 @@ private:
     vect2d<double> &U;
     vect2d<int> &PI;
 
-    /*
-        Random Number Generator Initialisation (for policy iteration)
-    */
+    // Random Number Generator Initialisation (for policy iteration)
     std::random_device dev;
     std::mt19937 rng;
     std::uniform_int_distribution<std::mt19937::result_type> randomAction;

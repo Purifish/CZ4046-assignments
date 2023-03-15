@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
-#include <iomanip> // for std::setw
+#include <iomanip>
 #include <memory>
 
 #include "mdp.hpp"
@@ -23,20 +23,13 @@ const std::string DIRECTIONS[] = {"NORTH", "EAST", "SOUTH", "WEST", "NONE"};
 
 int main()
 {
-    /*
-        Legend:
-            'w': white
-            'g': green
-            'o': orange
-            '0': wall
-    */
-    vect2d<char> grid;
-    bool part1 = false;
-    bool random = true;
+    vect2d<char> grid;  // 'w': white, 'g': green, 'o': orange, '0': wall
+    bool part1 = true;  // set this to true to use pre-defined maze for part 1
+    bool random = true; // set this to true to use a randomly-generated maze for part 2
 
     if (part1)
     {
-        // 'w': white, 'g': green, 'o': orange, '0': wall
+        // pre-defined maze for part 1
         grid = {
             {'g', '0', 'g', 'w', 'w', 'g'},
             {'w', 'o', 'w', 'g', '0', 'o'},
@@ -47,6 +40,7 @@ int main()
     }
     else if (!random)
     {
+        // pre-defined maze for part 2 (randomly-generated previously)
         grid = {
             {'w', 'w', 'o', 'g', 'w', 'w', 'g', 'o', 'o', 'o', 'o', 'w'},
             {'w', 'w', 'o', 'w', 'w', 'w', 'o', 'w', 'g', 'o', 'w', 'g'},
@@ -68,18 +62,15 @@ int main()
 
     printGrid(grid);
 
-    int M = grid.size();    // number of rows
-    int N = grid[0].size(); // number of cols
-
     /*
         Local variables
     */
+    size_t M = grid.size();                  // number of rows
+    size_t N = grid[0].size();               // number of cols
     vect2d<double> U(M, vect<double>(N, 0)); // Utilities array
     vect2d<int> PI(M, vect<int>(N, 4));      // policy array, initalized with NONE
 
-    /*
-        Hash map representing the rewards for each type of cell
-    */
+    // Hash map representing the rewards for each type of cell
     HashMap<char, double> rewards = {
         {'g', 1.0},
         {'w', -0.04},
@@ -87,14 +78,17 @@ int main()
 
     auto mdp = std::make_unique<Mdp>(G, MAX_ERROR, grid, U, PI, rewards);
 
+    // perform value iteration
     mdp->valueIteration("value-iteration-out.txt");
     printPolicy(PI);
     printUtilities(U);
 
+    // reset U and PI, choose random option for PI
     mdp->reset(true);
-
     std::cout << "\nInitial (random) Policy:\n\n";
     printPolicy(PI);
+
+    // perform policy iteration
     mdp->policyIteration();
     printPolicy(PI);
     printUtilities(U);
@@ -102,6 +96,15 @@ int main()
     return 0;
 }
 
+/**
+ * Generates a random maze and stores it in reference vector
+ * @param grid
+ * The 2D-vector ref to store the randome maze
+ * @param M
+ * The number of rows of the maze
+ * @param N
+ * The number of columns of the maze
+ */
 void generateRandomGrid(vect2d<char> &grid, size_t M, size_t N)
 {
     static std::random_device dev;
@@ -117,13 +120,13 @@ void generateRandomGrid(vect2d<char> &grid, size_t M, size_t N)
         {
             randNum = randomCellType(rng);
             if (randNum <= 40)
-                grid[r][c] = 'w';
+                grid[r][c] = 'w'; // 40% chance
             else if (randNum <= 50)
-                grid[r][c] = '0';
+                grid[r][c] = '0'; // 10% chance
             else if (randNum <= 75)
-                grid[r][c] = 'g';
+                grid[r][c] = 'g'; // 25% chance
             else
-                grid[r][c] = 'o';
+                grid[r][c] = 'o'; // 25% chance
         }
     }
 }

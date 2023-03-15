@@ -8,7 +8,7 @@ Mdp::Mdp(double _G, double _MAX_ERROR, vect2d<char> &_grid, vect2d<double> &_U, 
 }
 
 /**
- * Resets the utility and policy arrays.
+ * Resets the utility and policy vectors
  * @param random
  * If set to true, a random policy will be generated.
  * Otherwise, the policy will be set to 'NONE'
@@ -27,6 +27,10 @@ void Mdp::reset(bool random)
 
 /**
  * Returns the intended next state given the current state and action
+ * @param r The row of the state
+ * @param c The column of the state
+ * @param a The action (an int between 1 and 4)
+ * @return A pair of ints; the row and column of the next state
  */
 std::pair<int, int> Mdp::getNextState(int r, int c, int a)
 {
@@ -54,6 +58,14 @@ std::pair<int, int> Mdp::getNextState(int r, int c, int a)
     return std::make_pair(nextR, nextC);
 }
 
+/**
+ * Returns the expected value* of an action in a particular state
+ * @param r The row of the state
+ * @param c The column of the state
+ * @param a The action (an int between 1 and 4)
+ * @note The value* is NOT actually the utility, but rather the summation in equation 17.5 of the reference book.
+ * @return A double holding the expected value of the action
+ */
 double Mdp::expectedUtil(int r, int c, int a)
 {
     double util = 0.0;
@@ -63,6 +75,13 @@ double Mdp::expectedUtil(int r, int c, int a)
     return util;
 }
 
+/**
+ * Returns the possible resultant states and their probabilities, given a state and action
+ * @param r The row of the state
+ * @param c The column of the state
+ * @param a The action (an int between 1 and 4)
+ * @return A StateProbability vector containing at most 3 elements
+ */
 vect<StateProbability> Mdp::getProbabilities(int r, int c, int a)
 {
     int toSkip = (a + 2) % 4; // skip the opposite action
@@ -83,10 +102,14 @@ vect<StateProbability> Mdp::getProbabilities(int r, int c, int a)
     return probabilities;
 }
 
+/**
+ * The value iteration algorithm, following the reference book
+ * @param outputFileName The file that will contain the utility values of each iteration
+ */
 void Mdp::valueIteration(const std::string &outputFileName)
 {
     double delta;
-    int i;
+    int iterations;
     vect2d<double> newUtil(M, vect<double>(N, 0));
     std::ofstream outputFile(outputFileName);
 
@@ -94,36 +117,36 @@ void Mdp::valueIteration(const std::string &outputFileName)
                << N << "\n"
                << "*\n";
 
-    for (i = 1; i <= INT_MAX; i++)
+    for (iterations = 1; iterations <= INT_MAX; iterations++)
     {
         delta = 0.0;
         for (int r = 0; r < M; r++)
         {
             for (int c = 0; c < N; c++)
             {
-                // Skip walls
+                // skip walls
                 if (grid[r][c] == '0')
                     continue;
 
-                // Select first action's expected utility as max utility
+                // select first action's expected utility as max utility
                 newUtil[r][c] = expectedUtil(r, c, 0);
                 PI[r][c] = 0;
 
-                // Iterate thru rest of actions
+                // iterate thru rest of actions
                 for (int a = 1; a < 4; a++)
                 {
                     double currentExpectedUtil = expectedUtil(r, c, a);
                     if (currentExpectedUtil > newUtil[r][c])
                     {
-                        newUtil[r][c] = currentExpectedUtil;
-                        PI[r][c] = a;
+                        newUtil[r][c] = currentExpectedUtil; // update utility if needed
+                        PI[r][c] = a;                        // likewise for policy
                     }
                 }
                 newUtil[r][c] = newUtil[r][c] * G + rewards[grid[r][c]];
             }
         }
 
-        // Update the values before proceeding to the next iteration
+        // update the values before proceeding to the next iteration
         for (int r = 0; r < M; r++)
         {
             for (int c = 0; c < N; c++)
@@ -139,18 +162,21 @@ void Mdp::valueIteration(const std::string &outputFileName)
         if (delta < THRESH)
             break;
     }
-    std::cout << "Iterations: " << i << "\n";
+    std::cout << "Iterations: " << iterations << "\n";
     outputFile << "-";
     outputFile.close();
 }
 
+/**
+ * The modified policy iteration algorithm, following the reference book
+ */
 void Mdp::policyIteration()
 {
     vect2d<double> newUtil(M, vect<double>(N, 0));
-    int i;
+    int iterations;
     bool unchanged;
 
-    for (i = 1; i <= INT_MAX; i++)
+    for (iterations = 1; iterations <= INT_MAX; iterations++)
     {
         for (int k = 20; k > 0; k--)
         {
@@ -210,5 +236,5 @@ void Mdp::policyIteration()
         if (unchanged)
             break;
     }
-    std::cout << "Iterations: " << i << "\n";
+    std::cout << "Iterations: " << iterations << "\n";
 }
