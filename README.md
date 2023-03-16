@@ -1,6 +1,6 @@
 # CZ4046 Intelligent Agents - Assignment 1
 
-**Description** : This repo comprises my submission for the assignment
+**Description**: This repo comprises my submission for the assignment
 
 ## Get Started
 
