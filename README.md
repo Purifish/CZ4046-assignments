@@ -4,8 +4,16 @@
 
 ## Get Started
 
+### Navigate to the project directory
+
 ```bash
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
+./bin/part1
+./bin/part2-fixed-maze
+./bin/part2-random-maze
+```
+
+```bash
+./bin/part1
+./bin/part2-fixed-maze
+./bin/part2-random-maze
 ```
