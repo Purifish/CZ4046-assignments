@@ -1,4 +1,4 @@
-#include "mdp.hpp"
+#include "../include/mdp.hpp"
 
 Mdp::Mdp(double _G, double _MAX_ERROR, vect2d<char> &_grid, vect2d<double> &_U, vect2d<int> &_PI, HashMap<char, double> &_rewards)
     : M(_U.size()), N(_U[0].size()), G(_G), MAX_ERROR(_MAX_ERROR), grid(_grid), U(_U), PI(_PI), rewards(_rewards), THRESH(MAX_ERROR * (1.0 - G) / G)
@@ -10,7 +10,7 @@ Mdp::Mdp(double _G, double _MAX_ERROR, vect2d<char> &_grid, vect2d<double> &_U, 
 /**
  * Resets the utility and policy vectors
  * @param random
- * If set to true, a random policy will be generated.
+ * If set to true (which is the default value), a random policy will be generated.
  * Otherwise, the policy will be set to 'NONE'
  */
 void Mdp::reset(bool random)
@@ -104,18 +104,23 @@ vect<StateProbability> Mdp::getProbabilities(int r, int c, int a)
 
 /**
  * The value iteration algorithm, following the reference book
- * @param outputFileName The file that will contain the utility values of each iteration
+ * @param outputFileName The name of the file that will contain the utility values of each iteration.
+ * Leave blank to skip file-writing.
  */
 void Mdp::valueIteration(const std::string &outputFileName)
 {
     double delta;
     int iterations;
     vect2d<double> newUtil(M, vect<double>(N, 0));
-    std::ofstream outputFile(outputFileName);
+    std::ofstream outputFile;
 
-    outputFile << M << "\n"
-               << N << "\n"
-               << "*\n";
+    if (outputFileName != "")
+    {
+        outputFile = std::ofstream(outputFileName);
+        outputFile << M << "\n"
+                   << N << "\n"
+                   << "*\n";
+    }
 
     for (iterations = 1; iterations <= INT_MAX; iterations++)
     {
@@ -153,18 +158,27 @@ void Mdp::valueIteration(const std::string &outputFileName)
             {
                 delta = std::max(delta, fabs(newUtil[r][c] - U[r][c]));
                 U[r][c] = newUtil[r][c];
-                outputFile << U[r][c] << " ";
+
+                if (outputFileName != "")
+                    outputFile << U[r][c] << " ";
             }
-            outputFile << "\n";
+            if (outputFileName != "")
+                outputFile << "\n";
         }
-        outputFile << "*\n";
+        if (outputFileName != "")
+            outputFile << "*\n";
 
         if (delta < THRESH)
             break;
     }
+
     std::cout << "Iterations: " << iterations << "\n";
-    outputFile << "-";
-    outputFile.close();
+
+    if (outputFileName != "")
+    {
+        outputFile << "-";
+        outputFile.close();
+    }
 }
 
 /**

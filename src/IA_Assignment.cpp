@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <memory>
 
-#include "mdp.hpp"
+#include "../include/mdp.hpp"
 
 /*
     Function declarations
@@ -24,7 +24,7 @@ const std::string DIRECTIONS[] = {"NORTH", "EAST", "SOUTH", "WEST", "NONE"};
 int main()
 {
     vect2d<char> grid;  // 'w': white, 'g': green, 'o': orange, '0': wall
-    bool part1 = true;  // set this to true to use pre-defined maze for part 1
+    bool part1 = false; // set this to true to use pre-defined maze for part 1
     bool random = true; // set this to true to use a randomly-generated maze for part 2
 
     if (part1)
@@ -76,22 +76,33 @@ int main()
         {'w', -0.04},
         {'o', -1.0}};
 
+    // Mdp instantiation
     auto mdp = std::make_unique<Mdp>(G, MAX_ERROR, grid, U, PI, rewards);
 
     // perform value iteration
-    mdp->valueIteration("value-iteration-out.txt");
+    std::cout << "[Value Iteration]\n";
+    std::cout << "=======================================================\n";
+    mdp->valueIteration();
+    std::cout << "\nOptimal Policy:\n";
     printPolicy(PI);
+    std::cout << "Utility Values:\n";
     printUtilities(U);
+    std::cout << "=======================================================\n";
 
-    // reset U and PI, choose random option for PI
-    mdp->reset(true);
-    std::cout << "\nInitial (random) Policy:\n\n";
+    // reset U and PI, choose random option for PI. (pass false as argument for non-random policy)
+    mdp->reset();
+    std::cout << "\n[Policy Iteration]\n";
+    std::cout << "=======================================================\n";
+    std::cout << "Initial (random) Policy:\n\n";
     printPolicy(PI);
 
     // perform policy iteration
     mdp->policyIteration();
+    std::cout << "\nOptimal Policy:\n";
     printPolicy(PI);
+    std::cout << "Utility Values:\n";
     printUtilities(U);
+    std::cout << "=======================================================\n";
 
     return 0;
 }
@@ -133,7 +144,7 @@ void generateRandomGrid(vect2d<char> &grid, size_t M, size_t N)
 
 void printGrid(vect2d<char> &grid)
 {
-    std::cout << "The Grid:\n\n";
+    std::cout << "The Maze:\n\n";
     for (size_t r = 0; r < grid.size(); r++)
     {
         for (size_t c = 0; c < grid[0].size(); c++)

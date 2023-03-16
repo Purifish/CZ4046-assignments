@@ -48,9 +48,9 @@ public:
     Mdp(double _G, double _MAX_ERROR, vect2d<char> &_grid, vect2d<double> &_U, vect2d<int> &_PI, HashMap<char, double> &_rewards);
 
     // public methods
-    void valueIteration(const std::string &outputFileName);
+    void valueIteration(const std::string &outputFileName = "");
     void policyIteration();
-    void reset(bool random);
+    void reset(bool random = true);
 
 private:
     // private member variables
