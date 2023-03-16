@@ -29,7 +29,7 @@ void Mdp::reset(bool random)
  * Returns the intended next state given the current state and action
  * @param r The row of the state
  * @param c The column of the state
- * @param a The action (an int between 1 and 4)
+ * @param a The action (an int between 0 and 3)
  * @return A pair of ints; the row and column of the next state
  */
 std::pair<int, int> Mdp::getNextState(int r, int c, int a)
@@ -62,7 +62,7 @@ std::pair<int, int> Mdp::getNextState(int r, int c, int a)
  * Returns the expected value* of an action in a particular state
  * @param r The row of the state
  * @param c The column of the state
- * @param a The action (an int between 1 and 4)
+ * @param a The action (an int between 0 and 3)
  * @note The value* is NOT actually the utility, but rather the summation in equation 17.5 of the reference book.
  * @return A double holding the expected value of the action
  */
@@ -79,7 +79,7 @@ double Mdp::expectedUtil(int r, int c, int a)
  * Returns the possible resultant states and their probabilities, given a state and action
  * @param r The row of the state
  * @param c The column of the state
- * @param a The action (an int between 1 and 4)
+ * @param a The action (an int between 0 and 3)
  * @return A StateProbability vector containing at most 3 elements
  */
 vect<StateProbability> Mdp::getProbabilities(int r, int c, int a)
