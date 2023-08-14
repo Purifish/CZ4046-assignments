@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7e6a4dfc-d824-4622-88cb-3105a35d6217" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/cz4046/Old.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cz4046/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cz4046/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cz4046/ThreePrisonersDilemma.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cz4046/ThreePrisonersDilemma.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2MK2osBcjJfXZemwKG2fwSXxpvw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/GAMING/Desktop/IA-Assignment1/assignment2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Java Projects\cz4046-assignment1\src\cz4046" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7e6a4dfc-d824-4622-88cb-3105a35d6217" name="Changes" comment="" />
+      <created>1677502133824</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1677502133824</updated>
+      <workItem from="1677502134050" duration="281000" />
+      <workItem from="1680512004509" duration="7212000" />
+      <workItem from="1680575917594" duration="7065000" />
+      <workItem from="1680586148591" duration="15742000" />
+      <workItem from="1680662019430" duration="20821000" />
+      <workItem from="1680763894375" duration="12401000" />
+      <workItem from="1680785814122" duration="699000" />
+      <workItem from="1680830430805" duration="6821000" />
+      <workItem from="1680852397305" duration="16342000" />
+      <workItem from="1680872620308" duration="626000" />
+      <workItem from="1680873270739" duration="72000" />
+      <workItem from="1680940515692" duration="13712000" />
+      <workItem from="1681006313585" duration="6026000" />
+      <workItem from="1681036723996" duration="1191000" />
+      <workItem from="1681123973138" duration="697000" />
+      <workItem from="1681301754937" duration="679000" />
+      <workItem from="1681702404698" duration="565000" />
+      <workItem from="1681790536654" duration="7963000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
